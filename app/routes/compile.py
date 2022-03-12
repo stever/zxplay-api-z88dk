@@ -1,6 +1,7 @@
 import tempfile
 import base64
 import os
+import subprocess
 from pathlib import Path
 from fastapi import APIRouter, Header
 from typing import Optional
@@ -48,13 +49,34 @@ def handle_compile_request(
     with open(c_filename, 'w') as f:
         f.write(args.input.code)
 
-    # TODO: Compile the tape file from C source.
-    # main(['-taB', bas_filename])
+    try:
+        # Compile the tape file from C source.
+        path = os.path.dirname(os.path.abspath(c_filename))
+        stem = Path(c_filename).stem
+        out_filename = f'{os.path.join(path, stem)}'
+        tap_filename = f'{out_filename}.tap'
+        subprocess.run([
+            'zcc',
+            '+zx',
+            '-vn',
+            '-create-app',
+            '-clib=sdcc_iy',
+            '-startup=0',
+            c_filename,
+            '-o',
+            out_filename
+        ])
 
-    # TODO: Read and base64 encode the binary tape file.
-    tap_filename = f'{Path(c_filename).stem}.tap'
-    with open(tap_filename, 'rb') as f:
-        base64_encoded = base64.b64encode(f.read()).decode()
+        assert os.path.exists(tap_filename)
+
+        try:
+            # Read and base64 encode the binary tape file.
+            with open(tap_filename, 'rb') as f:
+                base64_encoded = base64.b64encode(f.read()).decode()
+                return CompileResult(base64_encoded=base64_encoded)
+
+        finally:
+            os.remove(tap_filename)
+
+    finally:
         os.remove(c_filename)
-        os.remove(tap_filename)
-        return CompileResult(base64_encoded=base64_encoded)

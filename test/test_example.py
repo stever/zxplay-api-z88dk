@@ -2,6 +2,7 @@ import logging
 import tempfile
 import base64
 import os
+import subprocess
 from pathlib import Path
 
 
@@ -25,15 +26,35 @@ int main()
 }
 """)
 
-    # TODO: Compile the tape file from basic source.
-    # main(['-taB', c_filename])
+    try:
+        # Compile the tape file from C source.
+        path = os.path.dirname(os.path.abspath(c_filename))
+        stem = Path(c_filename).stem
+        out_filename = f'{os.path.join(path, stem)}'
+        tap_filename = f'{out_filename}.tap'
+        subprocess.run([
+            'zcc',
+            '+zx',
+            '-vn',
+            '-create-app',
+            '-clib=sdcc_iy',
+            '-startup=0',
+            c_filename,
+            '-o',
+            out_filename
+        ])
 
-    # Read and base64 encode the binary tape file.
-    tap_filename = f'{Path(c_filename).stem}.tap'
-    log.debug(f'Tape filename: {tap_filename}')
-    with open(tap_filename, 'rb') as f:
-        base64_encoded = base64.b64encode(f.read()).decode()
-        log.debug(f'Base64 encoded: {base64_encoded}')
+        assert os.path.exists(tap_filename)
 
-    os.remove(c_filename)
-    os.remove(tap_filename)
+        try:
+            # Read and base64 encode the binary tape file.
+            log.debug(f'Tape filename: {tap_filename}')
+            with open(tap_filename, 'rb') as f:
+                base64_encoded = base64.b64encode(f.read()).decode()
+                log.debug(f'Base64 encoded: {base64_encoded}')
+
+        finally:
+            os.remove(tap_filename)
+
+    finally:
+        os.remove(c_filename)
