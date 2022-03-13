@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 def test_compile():
+    # NOTE: This test requires 'zcc' and probably other z88dk tools on PATH.
+
     log = logging.getLogger()
     log.debug('Testing C compiler')
 

@@ -1,7 +1,9 @@
 # To create the image:
 #   $ docker build -t steverobertson/zxplay-api-z88dk .
 # To run the container:
-#   $ docker run -v ${PWD}:/src/ -it steverobertson/zxplay-api-z88dk <command>
+#   $ docker run -n z88dk -v ${PWD}:/src/ -it steverobertson/zxplay-api-z88dk
+# To connect to the running container:
+#   $ docker exec -it z88dk /bin/bash
 
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 

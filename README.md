@@ -45,7 +45,7 @@ Tick option to "Forward client headers to webhook".
 
 ```graphql
 type Mutation {
-  compile (
+  compileC (
     code: String!
   ): CompileResult
 }
