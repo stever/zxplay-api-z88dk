@@ -54,12 +54,6 @@ def handle_compile_request(
     out_filename = f'{os.path.join(path, stem)}'
     tap_filename = f'{out_filename}.tap'
 
-    # Update the environment PATH to include 'zcc' etc.
-    env = os.environ.copy()
-    z88dk_path = env['Z88DK_PATH']
-    path = env['PATH']
-    env['PATH'] = f'{z88dk_path}/bin:{path}'
-
     try:
         # Compile the tape file from C source.
         subprocess.run([
@@ -72,7 +66,7 @@ def handle_compile_request(
             c_filename,
             '-o',
             out_filename
-        ], env=env)
+        ])
 
         assert os.path.exists(tap_filename)
 

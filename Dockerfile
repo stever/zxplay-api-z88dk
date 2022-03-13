@@ -8,8 +8,9 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
 ENV Z88DK_PATH="/opt/z88dk" \
-    SDCC_PATH="/tmp/sdcc" \
-    PATH="${Z88DK_PATH}/bin:${PATH}" \
+    SDCC_PATH="/tmp/sdcc"
+
+ENV PATH="${Z88DK_PATH}/bin:${PATH}" \
     ZCCCFG="${Z88DK_PATH}/lib/config/"
 
 RUN apt update && apt install -y \
