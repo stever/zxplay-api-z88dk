@@ -5,7 +5,7 @@
 ### Initial project setup
 
 ```bash
-git clone git@git.tiepy.dev:zxplay/zxplay-api-z88dk.git
+git clone https://github.com/stever/zxplay-api-z88dk.git
 cd zxplay-api-z88dk/
 virtualenv venv
 source ./venv/bin/activate
@@ -21,8 +21,8 @@ uvicorn app.main:app --reload
 ## Docker Build & Push
 
 ```bash
-docker build -t steverobertson/zxplay-api-z88dk .
-docker push steverobertson/zxplay-api-z88dk
+docker build -t ghcr.io/stever/zxplay-api-z88dk .
+docker push ghcr.io/stever/zxplay-api-z88dk
 ```
 
 ## Run Locally
@@ -32,7 +32,7 @@ docker run \
   --publish=80:8000 \
   --detach=true \
   --name=zxplay-api-z88dk \
-  steverobertson/zxplay-api-z88dk
+  ghcr.io/stever/zxplay-api-z88dk
 ```
 
 ## Hasura Deployment Configuration
